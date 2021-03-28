@@ -1,4 +1,5 @@
 import matplotlib.pyplot as plt
+import numpy as np
 from tensorflow import keras  # high level API for machine learning. use tensorflow as backend
 
 
@@ -39,9 +40,14 @@ def main():
     # epochs - define how many time the model see the train images from the data
     model.fit(train_images, train_labels, epochs=5)
 
-    test_loss, test_acc = model.evaluate(test_image,test_labels)
-
-    print("Tested Acc:", test_acc)
+    # make a prediction - find it's index
+    prediction = model.predict(test_images)
+    for i in range(5):
+        plt.grid(False)
+        plt.imshow(test_images[i], cmap=plt.cm.binary)  # plt.cm.binary for gray scale
+        plt.xlabel("Actual:" + class_names[test_labels[i]])
+        plt.title("Prediction" + class_names[np.argmax(prediction[i])])
+        plt.show()
 
 
 if __name__ == '__main__':
