@@ -90,7 +90,7 @@ def main():
     # save the model
     # model.save("text_classification_model.h5") #h5 is the extension in tf and keras
 
-    model= keras.model.load_model("text_classification_model.h5")
+    # model = keras.model.load_model("text_classification_model.h5")
 
 
 
