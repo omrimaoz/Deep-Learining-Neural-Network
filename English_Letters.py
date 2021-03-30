@@ -59,7 +59,6 @@ def main():
 
     # define train and test data sets
     train_images, train_labels, test_images, test_labels = split_dataset(dataset)
-    print(train_images[0], train_labels[0])
 
     # label names
     letter_digit = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M',
@@ -94,6 +93,12 @@ def main():
     # model fitness function
     # epochs - define how many time the model see the train images from the data
     model.fit(train_images, train_labels, epochs=5)
+    
+    # save the model
+    # model.save("English_Letters_model.h5") #h5 is the extension in tf and keras
+
+    '''load the model - for that skip code lines: 72 -> 99 and uncomment code line below'''
+    # model = keras.models.load_model("English_Letters_model.h5")
 
     # test model accuracy
     result = model.evaluate(test_image, test_labels)
@@ -107,10 +112,6 @@ def main():
         plt.xlabel("Actual: " + letter_digit[test_labels[i]])
         plt.title("Prediction: " + letter_digit[np.argmax(prediction[i])])
         plt.show()
-
-    # save the model
-    model.save("text_classification_model.h5") #h5 is the extension in tf and keras
-
 
 if __name__ == '__main__':
     main()
