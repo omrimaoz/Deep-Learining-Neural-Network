@@ -1,23 +1,10 @@
+# imports:
 import tensorflow as tf
 from tensorflow import keras  # high level API for machine learning. use tensorflow as backend
 import matplotlib.pyplot as plt
 import numpy as np
 import random
-import zlib
-
-
-def decompress_zlibFile(filename):
-    # load and decompress data from 'compressed_Dataset.zlib file
-    compressedText = open(filename + ".zlib", "rb").read()
-
-    decompressedText = zlib.decompress(compressedText)
-    decompressed_arr = np.frombuffer(decompressedText, np.uint8)
-    print("Successfully decompress dataset")
-    # reshape the data into 3d numpy array - shape=(104000,28,28)
-    # 104000 images constructed the dataset
-    # 28x28 is the image ratio
-    dataset = decompressed_arr.reshape(104000, 28, 28)
-    return dataset
+from Decompress_Dataset import decompress_zlibFile
 
 
 def split_dataset(data):
@@ -26,7 +13,7 @@ def split_dataset(data):
 
     # define numpy arrays
     train_images = np.empty(shape=(K, 28, 28))
-    train_labels = np.empty(shape=(K), dtype=np.int32)
+    train_labels = np.empty(shape=K, dtype=np.int32)
     test_images = np.empty(shape=(data.shape[0] - K, 28, 28))
     test_labels = np.empty(shape=(data.shape[0] - K), dtype=np.int32)
 
@@ -49,6 +36,9 @@ def split_dataset(data):
         test_labels[i] = num // 4000  # TODO check if 4000 is true
         i += 1
 
+    # stage screen massage:
+    print("Successfully prepared data\n")
+
     return train_images, train_labels, test_images, test_labels
 
 
@@ -59,6 +49,12 @@ def main():
 
     # define train and test data sets
     train_images, train_labels, test_images, test_labels = split_dataset(dataset)
+
+    # model hyper-parameters
+    n_epochs = 4
+    n_classes = 26  # number of letters - will be the the number of output neurons
+    input_layer_neurons = (28, 28)  # 28x28 pixels of image representation
+    hidden_layer = 128  # number of neurons in the hidden layer
 
     # label names
     letter_digit = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M',
@@ -71,29 +67,33 @@ def main():
 
     # define the model - create layers.
     # layer 1 - input layer, layer inputs are the 28x28 pixels of the image flatten
-    # into a 1 dimension numpy array.
-    # layer 2 - a dense layer, that means a fully connected layer with 128 neurons
-    # and an activation function - 'relu' - rectified linear unit.
-    # layer 3 - a dense layer, that means a fully connected layer with 128 neurons
+    # into a 1 dimension array.
+    # layer 2,3 - a dense layer, that means a fully connected layer with 128 neurons
     # and an activation function - 'relu' - rectified linear unit.
     # layer 4 - a dense layer and the output layer, that means a fully connected layer with
     # 26 neurons and an activation function - 'softmax' - each neuron get a probability value
     # and each neuron represent one of the clothing item define in letter_digit
 
     model = keras.Sequential([
-        keras.layers.Flatten(input_shape=(28, 28)),
-        keras.layers.Dense(128, activation="relu"),
-        keras.layers.Dense(128, activation="relu"),
-        keras.layers.Dense(26, activation="softmax")
+        keras.layers.Flatten(input_shape=input_layer_neurons),
+        keras.layers.Dense(hidden_layer, activation="relu"),
+        keras.layers.Dense(hidden_layer, activation="relu"),
+        keras.layers.Dense(n_classes, activation="softmax")
     ])
 
-    # model parameters
+    # optimiser - define optimizer object that will hold the current state and will update the parameters based on
+    # the computed gradients.
+    # optim.Adam is an optimization algorithms that works very well with this sort of classification
     model.compile(optimizer="adam", loss="sparse_categorical_crossentropy", metrics=["accuracy"])
+
+    # stage screen massage:
+    print("Successfully defines model\n")
+    print("Start training and testing the model")
 
     # model fitness function
     # epochs - define how many time the model see the train images from the data
-    model.fit(train_images, train_labels, epochs=5)
-    
+    model.fit(train_images, train_labels, epochs=n_epochs)
+
     # save the model
     # model.save("English_Letters_model.h5") #h5 is the extension in tf and keras
 
@@ -102,16 +102,25 @@ def main():
 
     # test model accuracy
     result = model.evaluate(test_image, test_labels)
-    print("Model Accuracy is: " + str(result[1] * 100)[0:3] + "%")
+    print("Model Accuracy is: {}%".format((result[1] * 100)[0:3]))
+
+    # stage screen massage:
+    print("Training and testing the model completed\n")
+    print("Initiating final test - classify 5 images\n")
 
     # make a prediction - find it's index
     prediction = model.predict(test_images)
     for i in range(5):
         plt.grid(False)
-        plt.imshow(test_images[i], cmap=plt.cm.binary)  # plt.cm.binary for gray scale
-        plt.xlabel("Actual: " + letter_digit[test_labels[i]])
-        plt.title("Prediction: " + letter_digit[np.argmax(prediction[i])])
+        plt.imshow(test_images[i], cmap=plt.cm.gray)  # plt.cm.gray for gray scale
+        plt.title("Actual: {}\nPrediction: {}".format(
+            letter_digit[test_labels[i]], letter_digit[np.argmax(prediction[i])]),
+            fontsize=16, family='serif')
         plt.show()
+
+    # stage screen massage:
+    print("Done")
+
 
 if __name__ == '__main__':
     main()
