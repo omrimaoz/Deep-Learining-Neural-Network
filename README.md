@@ -1,10 +1,10 @@
 # Deep-Learining-Neural-Network - 
 
-Handwrite Letters Recognition - Deep Learning with Neural network\n
-• Create NumPy array datasets from handwriting English letters images\n
-• Define and train the Neural network.\n
-• Test the network and make predictions.\n
-• Python implementation with TensorFlow and Keras, PyTorch libraries.\n
+Handwrite Letters Recognition - Deep Learning with Neural network<br>
+• Create NumPy array datasets from handwriting English letters images.<br>
+• Define and train the Neural network.<br>
+• Test the network and make predictions.<br>
+• Python implementation with TensorFlow and Keras, PyTorch libraries.<br>
 
 Acknowledgements
 
