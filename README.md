@@ -1,5 +1,10 @@
-# Deep-Learining-Neural-Network - On Progress
-Deep Learning &amp; Neural Network Project
+# Deep-Learining-Neural-Network - 
+
+Handwrite Letters Recognition - Deep Learning with Neural network\n
+• Create NumPy array datasets from handwriting English letters images\n
+• Define and train the Neural network.\n
+• Test the network and make predictions.\n
+• Python implementation with TensorFlow and Keras, PyTorch libraries.\n
 
 Acknowledgements
 
